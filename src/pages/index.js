@@ -1,37 +1,44 @@
-import { useState } from "react"
-import { useSelector } from "react-redux"
-import { pokemonApi, useGetPokemonByNameQuery } from "../services/pokemon"
-import { initializeStore, removeUndefined } from "../store"
+import { useState } from "react";
+import { getPokemonList, useGetPokemonByNameQuery } from "../services/pokemon";
+import { wrapper } from "../store.ts";
 
-export default function Home(props) {
-  const {data: pokemonList} = useSelector(pokemonApi.endpoints.getPokemonList.select())
-  const [pokemon, setPokemon] = useState(props.initialPokemon)
-
-  const {data: currentPokemon} = useGetPokemonByNameQuery(pokemon)
+export default function Home({ pokemonList, initialPokemon }) {
+  const [pokemon, setPokemon] = useState(initialPokemon);
+  const { data: currentPokemon } = useGetPokemonByNameQuery(pokemon);
 
   return (
     <>
-    <h1>Hi</h1>
-  <h2>You caught {pokemon}! They can have one of these abilities: {currentPokemon.abilities.map(ab => ab.ability.name).join(', ')}</h2>
-    <p>
-      Catch another!
-      <select value={pokemon} onChange={e => setPokemon(e.currentTarget.value)}>
-        {pokemonList.results.map(pok => <option>{pok.name}</option>)}
-      </select>
-    </p>
+      <h1>Hi</h1>
+      <h2>
+        You caught {pokemon}! They can have one of these abilities:{" "}
+        {currentPokemon?.abilities.map((ab) => ab.ability.name).join(", ")}
+      </h2>
+      <p>
+        Catch another!
+        <select
+          value={pokemon}
+          onChange={(e) => setPokemon(e.currentTarget.value)}
+        >
+          {pokemonList.results.map((pok) => (
+            <option key={pok.name}>{pok.name}</option>
+          ))}
+        </select>
+      </p>
     </>
-  )
+  );
 }
 
-export async function getServerSideProps() {
-  const store = initializeStore()
-  await store.dispatch(pokemonApi.endpoints.getPokemonList.initiate())
-  const {data: pokemonList} = pokemonApi.endpoints.getPokemonList.select()(store.getState())
-  const initialPokemon = pokemonList.results[0].name
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) => async (context) => {
+    const { data: pokemonList } = await store.dispatch(
+      getPokemonList.initiate(null)
+    );
+    const {
+      results: [{ name: initialPokemon }],
+    } = pokemonList;
 
-  await store.dispatch(pokemonApi.endpoints.getPokemonByName.initiate(initialPokemon))
+    console.log("State on server", store.getState());
 
-  // queryRef.unsubscribe() // I am not sure if something like this is necessary
-
-  return { props: { initialReduxState: removeUndefined(store.getState()), initialPokemon } }
-}
+    return { props: { pokemonList, initialPokemon } };
+  }
+);

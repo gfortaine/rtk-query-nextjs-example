@@ -1,18 +1,23 @@
 {
   "name": "rtk-query-example",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
+  "engines" : {
+    "node" : ">=15"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^1.5.0",
-    "@rtk-incubator/rtk-query": "^0.1.0",
-    "next": "10.0.3",
+    "@reduxjs/toolkit": "1.5.0",
+    "@rtk-incubator/rtk-query": "rtk-incubator/rtk-query#next",
+    "next": "10.0.5",
+    "next-redux-wrapper": "7.0.0-rc.1",
     "react": "17.0.1",
     "react-dom": "17.0.1",
-    "react-redux": "^7.2.2"
+    "react-redux": "7.2.2",
+    "redux": "4.0.5"
   }
 }

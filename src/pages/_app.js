@@ -1,12 +1,9 @@
-import { Provider } from 'react-redux'
-import { useStore } from '../store'
+import {wrapper} from '../store.ts';
 
-export default function App({ Component, pageProps }) {
-  const store = useStore(pageProps.initialReduxState)
-
+const App = ({ Component, pageProps }) => {
   return (
-    <Provider store={store}>
       <Component {...pageProps} />
-    </Provider>
   )
 }
+
+export default wrapper.withRedux(App);

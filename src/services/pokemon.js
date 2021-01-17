@@ -1,19 +1,17 @@
-import { createApi, fetchBaseQuery } from '@rtk-incubator/rtk-query';
+import { createApi } from '@rtk-incubator/rtk-query';
+
+import baseQuery from '../lib/query';
 
 // Define a service using a base URL and expected endpoints
-export const pokemonApi = createApi({
+const pokemonApi = createApi({
   reducerPath: 'pokemonApi',
-  // baseQuery: fetchBaseQuery({ baseUrl: 'https://pokeapi.co/api/v2/' }), // uncomment for brokenness repro ur welcome :)
-  baseQuery: async (baseUrl, prepareHeaders, ...rest) => {
-    const response = await fetch(`https://pokeapi.co/api/v2/${baseUrl}`, rest)
-    return {data: await response.json()}
-  },
+  baseQuery,
   endpoints: (builder) => ({
     getPokemonByName: builder.query({
-      query: (name) => `pokemon/${name}`,
+      query: (name) => ({ url: `pokemon/${name}` }),
     }),
     getPokemonList: builder.query({
-      query: () => `pokemon`
+      query: () => ({ url: `pokemon` })
     })
   }),
 });
@@ -21,3 +19,8 @@ export const pokemonApi = createApi({
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
 export const { useGetPokemonByNameQuery } = pokemonApi;
+
+// Possible exports
+export const { endpoints: { getPokemonList } } = pokemonApi;
+
+export default pokemonApi;
