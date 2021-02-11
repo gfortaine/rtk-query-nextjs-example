@@ -3,19 +3,19 @@
 import {configureStore, ThunkAction} from '@reduxjs/toolkit';
 import {Action} from 'redux';
 import {createWrapper, HYDRATE} from 'next-redux-wrapper';
-import { setupListeners } from '@rtk-incubator/rtk-query';
+import { setupListeners } from '@rtk-incubator/rtk-query/react';
 
-import pokemonApi from './services/pokemon';
+import fileApi from './services/file';
 
 const makeStore = () => {
   return configureStore({
     reducer: {
       // Add the generated reducer as a specific top-level slice
-      [pokemonApi.reducerPath]: pokemonApi.reducer,
+      [fileApi.reducerPath]: fileApi.reducer,
     },
     // Adding the api middleware enables caching, invalidation, polling,
     // and other useful features of `rtk-query`.
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(pokemonApi.middleware),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(fileApi.middleware),
     devTools: process.env.NODE_ENV !== 'production',
   });
 }

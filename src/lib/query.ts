@@ -1,7 +1,7 @@
 import { fetchBaseQuery } from "@rtk-incubator/rtk-query";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "https://pokeapi.co/api/v2/"
+  baseUrl: "https://jsonplaceholder.typicode.com/"
 });
 
 export default baseQuery;
